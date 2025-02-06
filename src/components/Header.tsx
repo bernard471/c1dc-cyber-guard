@@ -14,7 +14,7 @@ export const Navigation = ({ isScrolled }: NavigationProps) => {
   const navigation = [
     { name: 'Features', href: '#features' },
     { name: 'How It Works', href: '#how-it-works' },
-    { name: 'Report Crime', href: '/report-crime' },
+    { name: 'Report Crime', href: '#report-crime' },
     { name: 'Resources', href: '#resources' },
   ]
 
@@ -46,7 +46,7 @@ export const Navigation = ({ isScrolled }: NavigationProps) => {
             ))}
             
             <Link
-              href="/report-incident"
+              href="/auth/login"
               className="inline-flex items-center justify-center rounded-md bg-[#0466c8] px-4 py-2 text-sm font-medium text-white hover:bg-[#0353a4] transition-colors"
             >
               Sign In
@@ -85,7 +85,7 @@ export const Navigation = ({ isScrolled }: NavigationProps) => {
                 </Link>
               ))}
               <Link
-                href="/login"
+                href="/auth/login"
                 className="block rounded-md px-3 py-2 text-base font-medium text-[#0466c8] hover:bg-[#0466c8]/10"
                 onClick={() => setIsMenuOpen(false)}
               >

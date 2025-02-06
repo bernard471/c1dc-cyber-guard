@@ -181,6 +181,7 @@ export const CrimeReportTabs = () => {
 
   return (
   <>
+  <section id="report-crime">
     <motion.div 
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -332,6 +333,7 @@ export const CrimeReportTabs = () => {
   onClose={() => setShowTrackingDetails(false)}
   caseDetails={trackingDetails}
 />
+</section>
     </>
   );
 };
