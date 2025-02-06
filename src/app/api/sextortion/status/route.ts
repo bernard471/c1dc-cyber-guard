@@ -2,16 +2,22 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { Sextortion } from '@/models/Sextortion';
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { reportId: string } }
-) {
+export async function PUT(request: Request) {
   try {
     await connectDB();
-    const { status, statusMessage } = await request.json();
     
+    // Extract reportId from the request body
+    const { reportId, status, statusMessage } = await request.json();
+
+    if (!reportId) {
+      return NextResponse.json(
+        { success: false, message: "Report ID is required" },
+        { status: 400 }
+      );
+    }
+
     const updatedReport = await Sextortion.findOneAndUpdate(
-      { reportId: params.reportId },
+      { reportId },
       { 
         status,
         statusMessage,
