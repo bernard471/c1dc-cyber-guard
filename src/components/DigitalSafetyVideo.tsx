@@ -37,7 +37,7 @@ export const DigitalSafetyVideo = ({ content, onClose }: VideoPopupProps) => {
                     <div className="aspect-video bg-[#001233] rounded-lg">
                         <iframe
                             src={content.videoUrl}
-                            className="w-full h-full rounded-lg"
+                            className="w-full h-[680px] rounded-lg"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
                         />
