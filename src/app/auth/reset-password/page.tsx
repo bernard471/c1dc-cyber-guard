@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Shield } from 'lucide-react'
 import Link from 'next/link'
 
-export default function ResetPassword() {
+// Separate client component that uses useSearchParams
+function ResetPasswordContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
@@ -129,5 +130,18 @@ export default function ResetPassword() {
         </form>
       </div>
     </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      </div>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
   )
 }

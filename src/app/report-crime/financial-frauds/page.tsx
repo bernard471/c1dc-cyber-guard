@@ -7,9 +7,59 @@ import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import DashboardHeader from '@/components/DashboardHeader'
 
+// Define the form data type to match FinancialFraudFormData
+type FormData = {
+  fraudType: string;
+  bankDetails: {
+    bankName: string;
+    accountType: string;
+  };
+  dateDiscovered: string;
+  description: string;
+  fraudsterDetails: {
+    suspectedPerpetrator: string;
+    fraudsterAccount: string;
+    communicationMethod: string;
+  };
+  evidenceFiles: File[];
+  transactionDetails: {
+    amountLost: number;
+    details: string;
+  };
+  fraudIndicators: {
+    accountCompromised: boolean;
+    cardCompromised: boolean;
+    checkFraud: boolean;
+    loanFraud: boolean;
+    transferFraud: boolean;
+  };
+  recoveryStatus: {
+    recoveryAttempted: boolean;
+    recoveryAmount: number;
+    bankResponse: string;
+  };
+  actionsStatus: {
+    bankInformed: boolean;
+    policeReported: boolean;
+  };
+  actionsTaken: string;
+  affectedServices: Array<{
+    serviceName: string;
+    dateAffected: string;
+    status: string;
+  }>;
+  isAnonymous: boolean;
+  contactInfo: {
+    name: string;
+    email: string;
+    phone: string;
+    contactPreference: 'email' | 'phone' | 'whatsapp';
+  };
+}
+
 export default function FinancialFraudReportPage() {
   const [activeTab, setActiveTab] = useState('finance-fraud');
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     fraudType: '',
     bankDetails: {
       bankName: '',
@@ -22,7 +72,7 @@ export default function FinancialFraudReportPage() {
       fraudsterAccount: '',
       communicationMethod: ''
     },
-    evidenceFiles: [] as File[],
+    evidenceFiles: [],
     transactionDetails: {
       amountLost: 0,
       details: ''
@@ -44,13 +94,13 @@ export default function FinancialFraudReportPage() {
       policeReported: false
     },
     actionsTaken: '',
-    affectedServices: [] as string[],
+    affectedServices: [],
     isAnonymous: false,
     contactInfo: {
       name: '',
       email: '',
       phone: '',
-      contactPreference: 'email' as 'email' | 'phone' | 'whatsapp'
+      contactPreference: 'email'
     }
   });
 
@@ -78,7 +128,7 @@ export default function FinancialFraudReportPage() {
             <div className="p-6">
               <FinancialFraudForm 
                 formData={formData} 
-                setFormData={setFormData}
+                setFormData={(data: FormData) => setFormData(data)}
               />
             </div>
           </div>
