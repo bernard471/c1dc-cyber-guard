@@ -12,7 +12,8 @@ export async function POST(request: Request) {
     if (!report) {
       return NextResponse.json({ 
         success: false, 
-        message: 'Case not found' 
+        message: 'Case not found',
+        code: 'CASE_NOT_FOUND'
       }, { status: 404 });
     }
 
@@ -25,7 +26,9 @@ export async function POST(request: Request) {
     console.error('Error fetching case details:', error);
     return NextResponse.json({
       success: false,
-      message: 'Failed to fetch case details'
+      message: 'Failed to fetch case details',
+      code: 'FETCH_ERROR'
     }, { status: 500 });
   }
 }
+

@@ -1,6 +1,8 @@
 import { AlertTriangle, ArrowRight, CheckCircle, Radio, Terminal } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
+import Link from 'next/link'
+
 
 const PulsingRings = () => {
     return (
@@ -150,9 +152,10 @@ export const HeroSection = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-4xl tracking-tight font-extrabold text-white md:text-center sm:text-5xl md:text-5xl"
             >
-                  <span className="block ">Report Cybercrime</span>
-                  <span className="block font-serif text-[#0466c8]">Protect Your Digital Life</span>
-                  </motion.h1>
+            <span className="block font-poppins font-semibold">Report Cybercrime</span>
+
+            <span className="block font-serif text-[#0466c8]">Protect Your Digital Life</span>
+            </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -165,15 +168,21 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }} className="flex flex-col md:justify-center sm:flex-row gap-4">
-                    <button className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-500 flex items-center justify-center group">
-                      Report Incident
-                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                    <button className="px-8 py-4 border border-blue-400 text-blue-400 rounded-lg hover:bg-blue-400/10">
-                      Learn More
-                    </button>
-                    </motion.div>
-                    </motion.div>
+                <Link 
+                  href="/auth/login" 
+                  className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-500 flex items-center justify-center group"
+                >
+                  Get Started
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link 
+                  href="/#resources" 
+                  className="px-8 py-4 border border-blue-400 text-blue-400 rounded-lg hover:bg-blue-400/10"
+                >
+                  Learn More
+                </Link>
+              </motion.div>
+              </motion.div>
                
                  <motion.div 
             initial={{ opacity: 0, x: 50 }}

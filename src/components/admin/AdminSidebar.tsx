@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { BarChart, FileText, Settings, Users, X } from "lucide-react";
+import { BarChart, FileText, Users, X } from "lucide-react";
 
 interface AdminSidebarProps {
   isOpen?: boolean;
@@ -58,15 +58,6 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             >
               <Users className="mr-2 h-4 w-4" />
               Users
-            </Button>
-          </Link>
-          <Link href="/admin-dashboard/settings">
-            <Button 
-              variant={pathname === '/admin-dashboard/settings' ? 'default' : 'ghost'}
-              className="w-full justify-start"
-            >
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
             </Button>
           </Link>
         </nav>

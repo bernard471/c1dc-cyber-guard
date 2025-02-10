@@ -36,7 +36,11 @@ interface FinancialFraudFormData {
     policeReported: boolean;
   };
   actionsTaken: string;
-  affectedServices: string[];
+  affectedServices: Array<{
+    serviceName: string;
+    dateAffected: string;
+    status: string;
+  }>;
   isAnonymous: boolean;
   contactInfo: {
     name: string;
@@ -44,6 +48,7 @@ interface FinancialFraudFormData {
     phone: string;
     contactPreference: 'email' | 'phone' | 'whatsapp';
   };
+  
 }
 
 const initialFormData: FinancialFraudFormData = {
@@ -368,24 +373,29 @@ export const FinancialFraudForm = ({ formData = initialFormData, setFormData }: 
   <label className="block text-sm font-medium text-gray-700 mb-2">
     Affected Services
   </label>
-  <div className="space-y-2">
-    {['Mobile Banking', 'Internet Banking', 'ATM', 'Credit Card', 'Debit Card', 'Other'].map((service) => (
-      <div key={service} className="flex items-center">
-        <input
-          type="checkbox"
-          checked={formData.affectedServices.includes(service)}
-          onChange={(e) => {
-            const updatedServices = e.target.checked
-              ? [...formData.affectedServices, service]
-              : formData.affectedServices.filter(s => s !== service);
-            setFormData({...formData, affectedServices: updatedServices});
-          }}
-          className="h-4 w-4 text-blue-600 rounded"
-        />
-        <label className="ml-2">{service}</label>
-      </div>
-    ))}
+
+
+{['Mobile Banking', 'Internet Banking', 'ATM', 'Credit Card', 'Debit Card', 'Other'].map((service) => (
+  <div key={service} className="flex items-center">
+    <input
+      type="checkbox"
+      checked={formData.affectedServices.some(s => s.serviceName === service)}
+      onChange={(e) => {
+        const updatedServices = e.target.checked
+          ? [...formData.affectedServices, {
+              serviceName: service,
+              dateAffected: new Date().toISOString().split('T')[0], // Current date as default
+              status: 'affected'
+            }]
+          : formData.affectedServices.filter(s => s.serviceName !== service);
+        setFormData({...formData, affectedServices: updatedServices});
+      }}
+      className="h-4 w-4 text-blue-600 rounded"
+    />
+    <label className="ml-2">{service}</label>
   </div>
+))}
+
 </div>
 
 {/* Actions Taken */}
@@ -539,23 +549,6 @@ export const FinancialFraudForm = ({ formData = initialFormData, setFormData }: 
               })}
               className="w-full p-2 border rounded-lg"
               placeholder="Amount recovered in GHS"
-            />
-          </div>
-  
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Bank&apos;s Response
-            </label>
-            <textarea
-              name="bankResponse"
-              value={formData.recoveryStatus.bankResponse}
-              onChange={(e) => setFormData({
-                ...formData,
-                recoveryStatus: {...formData.recoveryStatus, bankResponse: e.target.value}
-              })}
-              rows={3}
-              className="w-full p-2 border rounded-lg"
-              placeholder="Describe the bank's response to your report..."
             />
           </div>
         </div>

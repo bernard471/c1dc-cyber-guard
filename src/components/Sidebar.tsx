@@ -14,6 +14,8 @@ import {
   ChevronDown,
   ChevronRight
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
 
 const navigationItems = [
   { icon: <Home className="w-5 h-5" />, name: 'Home', id: 'home', path: '/' },
@@ -53,7 +55,8 @@ const navigationItems = [
 
 const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+  const router = useRouter();
+
 
   const initialOpenDropdowns = navigationItems
     .filter(item => item.subMenu?.some(sub => sub.id === activeTab))
@@ -144,9 +147,21 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab:
     ) : (
       <Link href={item.path}>
         <button
-          onClick={() => {
+          onClick={async () => {
             setActiveTab(item.id);
             setIsMobileMenuOpen(false);
+            
+            // Add logout logic for home button
+            if (item.id === 'home') {
+              try {
+                await fetch('/api/auth/logout', {
+                  method: 'POST',  // Changed from 'GET' to 'POST'
+                });
+                router.push('/');
+              } catch (error) {
+                console.error('Logout failed:', error);
+              }
+            }
           }}
           className={`w-full flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${
             activeTab === item.id ? 'bg-gray-100 text-gray-900' : ''

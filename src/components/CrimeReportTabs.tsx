@@ -29,6 +29,7 @@ const severityLevels = [
 
 export const CrimeReportTabs = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isTracking, setIsTracking] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [location, setLocation] = useState<Location | null>(null);
     const [locationError, setLocationError] = useState('');
@@ -156,28 +157,34 @@ export const CrimeReportTabs = () => {
       const handleTrackCase = async () => {
         if (!trackingId) return;
         
+        setIsTracking(true);
+        
         try {
           const response = await fetch('/api/track-case', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-            },
+          },
             body: JSON.stringify({ caseNumber: trackingId })
           });
       
           const result = await response.json();
-      
-          if (!response.ok) {
-            throw new Error(result.message || 'Case not found');
-          }
-      
+          
+          // Set tracking details even if case not found
           setTrackingDetails(result.data);
           setShowTrackingDetails(true);
+      
         } catch (error) {
           console.error('Error fetching case details:', error);
-          // Handle error appropriately
+          // Show popup with null data to trigger NotFoundMessage
+          setTrackingDetails(null);
+          setShowTrackingDetails(true);
+        } finally {
+          setIsTracking(false);
         }
       };
+      
+      
 
   return (
   <>
@@ -315,8 +322,16 @@ export const CrimeReportTabs = () => {
             <Button 
               className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500"
               onClick={handleTrackCase}
+              disabled={isTracking}
             >
-              Track Case
+              {isTracking ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Tracking...</span>
+                </div>
+              ) : (
+                'Track Case'
+              )}
             </Button>
           </motion.div>
         )}
@@ -328,11 +343,12 @@ export const CrimeReportTabs = () => {
         caseNumber={caseNumber}
         location={location}
         />
-        <TrackingDetailsPopup 
+<TrackingDetailsPopup 
   isOpen={showTrackingDetails}
   onClose={() => setShowTrackingDetails(false)}
   caseDetails={trackingDetails}
 />
+
 </section>
     </>
   );

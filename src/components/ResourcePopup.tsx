@@ -1,16 +1,8 @@
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { ResourcePopupProps } from '../types/resources';
 
-interface ResourcePopupProps {
-  content: {
-    title: string;
-    mainDescription: string;
-    keyPoints: string[];
-    bestPractices: string[];
-    tools: string[];
-  };
-  onClose: () => void;
-}
+
 
 export const ResourcePopup = ({ content, onClose }: ResourcePopupProps) => {
   return (

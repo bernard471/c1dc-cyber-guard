@@ -23,10 +23,11 @@ interface TrackingDetailsPopupProps {
   isOpen: boolean;
   onClose: () => void;
   caseDetails: CaseDetails | null;
+  error?: string;
 }
 
 export const TrackingDetailsPopup = ({ isOpen, onClose, caseDetails }: TrackingDetailsPopupProps) => {
-  if (!isOpen || !caseDetails) return null;
+  if (!isOpen) return null;  // Remove the || !caseDetails condition
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
@@ -66,6 +67,32 @@ export const TrackingDetailsPopup = ({ isOpen, onClose, caseDetails }: TrackingD
     }
   };
 
+  const NotFoundMessage = () => (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <AlertCircle className="h-6 w-6 text-red-500" />
+        <h3 className="text-xl font-semibold text-white">Case Not Found</h3>
+      </div>
+      
+      <div className="space-y-4 bg-gray-700/50 rounded-lg p-6">
+        <div className="flex items-start gap-3">
+          <div className="h-2 w-2 rounded-full bg-red-500 mt-2" />
+          <p className="text-red-400">Only reports submitted through our official platform can be tracked here.</p>
+        </div>
+        
+        <div className="flex items-start gap-3">
+          <div className="h-2 w-2 rounded-full bg-yellow-500 mt-2" />
+          <p className="text-yellow-400">Double-check your case ID format: Should match pattern EM#########</p>
+        </div>
+        
+        <div className="flex items-start gap-3">
+          <div className="h-2 w-2 rounded-full bg-green-500 mt-2" />
+          <p className="text-green-400">Need help? Contact our support team for assistance with tracking your case.</p>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -84,7 +111,8 @@ export const TrackingDetailsPopup = ({ isOpen, onClose, caseDetails }: TrackingD
         >
           <X size={30} />
         </button>
-
+        {caseDetails ? (
+        // Existing case details content
         <div className="space-y-6 max-h-[80vh] overflow-y-auto pr-2">
           <div>
             <h2 className="text-2xl font-bold text-white mb-1">Case Details</h2>
@@ -177,7 +205,10 @@ export const TrackingDetailsPopup = ({ isOpen, onClose, caseDetails }: TrackingD
             </div>
           </div>
         </div>
+      ) : (
+        <NotFoundMessage />
+      )}
       </motion.div>
-    </motion.div>
-  );
+      </motion.div>
+);
 };

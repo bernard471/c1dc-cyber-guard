@@ -16,33 +16,36 @@ export default function SignUp() {
   });
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password
-        }),
-      });
+// In your handleSubmit function, after successful signup:
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (data.success) {
-        router.push('/auth/login');
-      } else {
-        setError(data.message);
-      }
-    } catch (error) {
-      setError('Something went wrong');
-      console.error(error);
+    if (data.success) {
+      router.push('/auth/login');
+    } else {
+      setError(data.message);
     }
-  };
+  } catch (error) {
+    setError('Something went wrong');
+    console.error(error);
+  }
+};
+
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">

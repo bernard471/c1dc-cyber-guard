@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle, MapPin, X } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
 import { Button } from './ui/button';
-import Link from 'next/link';
+
 
 interface ConfirmationPopupProps {
   showConfirmation: boolean;
@@ -16,6 +16,14 @@ interface ConfirmationPopupProps {
 
 export const ConfirmationPopup = ({ showConfirmation, onClose, caseNumber, location }: ConfirmationPopupProps) => {
   if (!showConfirmation) return null;
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(caseNumber);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
   return (
     <motion.div
@@ -48,8 +56,32 @@ export const ConfirmationPopup = ({ showConfirmation, onClose, caseNumber, locat
 
         <div className="space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
           <div className="flex items-center justify-between">
-            <span className="text-gray-600">Case Number:</span>
+          <span className="text-gray-600">Case Number:</span>
+          <div className="flex items-center gap-2">
             <span className="font-mono font-bold text-primary">{caseNumber}</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={copyToClipboard}
+              className="hover:bg-gray-100"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-gray-600"
+              >
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
+            </Button>
+          </div>
           </div>
           
           {location && (
@@ -77,11 +109,6 @@ export const ConfirmationPopup = ({ showConfirmation, onClose, caseNumber, locat
           >
             Close
           </Button>
-          <Link href={`/evidence-page?caseNumber=${caseNumber}`} className="block">
-            <Button variant="secondary" className="w-full">
-              Submit Additional Evidence
-            </Button>
-          </Link>
         </div>
       </motion.div>
     </motion.div>

@@ -148,7 +148,7 @@ export const SextortionForm = ({ formData = initialFormData, setFormData }: {
   
 
   const handleEvidenceUpload = () => {
-    router.push('/evidence-upload');
+    router.push('/evidence-page');
   };
 
   return (

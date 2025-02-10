@@ -24,10 +24,10 @@ export default function AdminUsers() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('/api/admin/users');
+        const response = await fetch('/api/admin/users/user-management');
         const data = await response.json();
         if (data.success) {
-          setUsers(data.recentUsers);
+          setUsers(data.users); // Changed from data.recentUsers to data.users
         }
       } catch (error) {
         console.error('Error fetching users:', error);

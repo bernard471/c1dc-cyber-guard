@@ -495,7 +495,7 @@ export const ShoppingScamForm = ({ formData = initialFormData, setFormData }: {
         <SuccessPopup
           reportId={reportId}
           onClose={() => setShowSuccessPopup(false)}
-          onEvidenceUpload={() => router.push('/evidence-upload')}
+          onEvidenceUpload={() => router.push('/evidence-page')}
         />
       )}
     </>

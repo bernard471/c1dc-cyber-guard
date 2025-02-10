@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/components/ui/select";
-import {Dialog,DialogContent,DialogDescription,DialogHeader,DialogTitle,DialogFooter,} from "@/components/ui/dialog";
+import {Dialog,DialogContent,DialogDescription,DialogHeader,DialogTitle,} from "@/components/ui/dialog";
 import {Phone,AlertTriangle,Shield,SendHorizontal,HeartPulse,PhoneCall,ShieldAlert,Clock,MapPin,AlertCircle, CheckCircle} from 'lucide-react';
 import DashboardHeader from '@/components/DashboardHeader';
 import Sidebar from '@/components/Sidebar';
@@ -159,7 +159,13 @@ const EmergencySupport = () => {
     }
 };
 
-  
+const copyToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(caseNumber);
+  } catch (err) {
+    console.error('Failed to copy text: ', err);
+  }
+};
 
 
   const severityLevels = [
@@ -332,11 +338,35 @@ const EmergencySupport = () => {
       Your emergency alert has been received. Our support team will contact you immediately.
     </DialogDescription>
     
-    <div className="mt-6 space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
-      <div className="flex items-center justify-between">
-        <span className="text-gray-600">Case Number:</span>
-        <span className="font-mono font-bold text-primary">{caseNumber}</span>
-      </div>
+    <div className="space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
+          <div className="flex items-center justify-between">
+          <span className="text-gray-600">Case Number:</span>
+          <div className="flex items-center gap-2">
+            <span className="font-mono font-bold text-primary">{caseNumber}</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={copyToClipboard}
+              className="hover:bg-gray-100"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-gray-600"
+              >
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
+            </Button>
+          </div>
+          </div>
       
       {location && (
         <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -355,7 +385,8 @@ const EmergencySupport = () => {
       </AlertDescription>
       </Alert>
       </DialogHeader>
-      <DialogFooter className="mt-6">
+
+      <div className="mt-2 space-y-2">
         <Button 
           variant="outline" 
           onClick={() => setShowConfirmation(false)}
@@ -363,12 +394,12 @@ const EmergencySupport = () => {
         >
           Close
         </Button>
-        <Link href={`/evidence-page?caseNumber=${caseNumber}`}>
-          <Button variant="secondary" className="w-full mt-2">
-            Submit Additional Evidence
+        <Link href={`/evidence-page?caseNumber=${caseNumber}`} className="block">
+          <Button variant="secondary" className="w-full bg-blue-500 text-white hover:bg-blue-400">
+            Copy your Case Number to Submit Additional Evidence
           </Button>
         </Link>
-      </DialogFooter>
+      </div>
     </DialogContent>
 
    

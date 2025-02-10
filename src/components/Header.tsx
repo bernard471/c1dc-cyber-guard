@@ -13,7 +13,7 @@ export const Navigation = ({ isScrolled }: NavigationProps) => {
 
   const navigation = [
     { name: 'Features', href: '#features' },
-    { name: 'How It Works', href: '#how-it-works' },
+    { name: 'FAQs', href: '/pages/support/faq' },
     { name: 'Report Crime', href: '#report-crime' },
     { name: 'Resources', href: '#resources' },
   ]

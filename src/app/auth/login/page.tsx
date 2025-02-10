@@ -54,7 +54,7 @@ export default function Login() {
           <div className="flex items-center justify-center mb-4">
             <Link href="/" className="flex items-center">
               <Shield className="w-8 h-8 text-[#0466c8]" />
-              <span className="ml-2 text-xl font-bold text-blue-600 hover:text-white transition-colors">
+              <span className="ml-2 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
                 CyberGuard
               </span>
             </Link>
