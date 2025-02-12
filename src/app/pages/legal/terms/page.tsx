@@ -140,9 +140,9 @@ export default function Terms() {
             For legal inquiries or questions about these Terms of Service, contact our legal department at:
           </p>
           <div className="text-[#0466c8]">
-            <p>Email: support@cyberguard.com</p>
+            <p>Email: c1dcreports@gmail.com</p>
             <p>Phone: +233 (0) 552 373 603</p>
-            <p>Address: info@cyberguard.com</p>
+            <p>Address: info@cyber1defense.com</p>
           </div>
         </div>
       </div>

@@ -17,14 +17,14 @@ export default function ContactUs() {
       icon: <Phone className="w-6 h-6 text-[#0466c8]" />,
       title: "Emergency Hotline",
       description: "24/7 Support Available",
-      value: "+233 (0) 300 000 000",
+      value: "+233 (0) 552 373 603",
       badge: "Always Available"
     },
     {
       icon: <Mail className="w-6 h-6 text-[#0466c8]" />,
       title: "Email Support",
       description: "Send us a message anytime",
-      value: "support@cyberguard.com",
+      value: "c1dcreports@gmail.com",
       badge: "24hr Response"
     },
     {
