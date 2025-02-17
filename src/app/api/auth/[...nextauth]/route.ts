@@ -28,32 +28,44 @@ const handler = NextAuth({
       }),
     ],
     callbacks: {
-      async signIn({ account, profile }) {
-        if (account?.provider === "google") {
-          await connectDB();
-          
-          const userDoc = {
-            name: profile?.name,
-            email: profile?.email,
-            image: profile?.image,
-            createdAt: new Date(),
-            lastActive: new Date(),
-            isGoogleUser: true
-          };
-  
-          const existingUser = await User.findOne({ email: profile?.email });
-          
-          if (!existingUser) {
-            await User.create(userDoc);
-          } else {
-            await User.findOneAndUpdate(
-              { email: profile?.email },
-              { lastActive: new Date() }
-            );
+        async signIn({ account, profile }) {
+          if (account?.provider === "google") {
+            await connectDB();
+            
+            const userDoc = {
+              name: profile?.name,
+              email: profile?.email,
+              image: profile?.image,
+              createdAt: new Date(),
+              lastActive: new Date(),
+              isGoogleUser: true
+            };
+      
+            const existingUser = await User.findOne({ email: profile?.email });
+            
+            if (!existingUser) {
+              await User.create(userDoc);
+              
+              // Send welcome email for new Google users
+              await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/welcome-email`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  name: profile?.name,
+                  email: profile?.email
+                })
+              });
+            } else {
+              await User.findOneAndUpdate(
+                { email: profile?.email },
+                { lastActive: new Date() }
+              );
+            }
           }
-        }
-        return true;
-      },
+          return true;
+        },
   
       async jwt({ token, user }) {
         if (user) {
