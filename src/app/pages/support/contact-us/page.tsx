@@ -1,7 +1,7 @@
 "use client"
 
 import { DashboardLayout } from '@/components/Dashboard/DashboardLayout'
-import { Mail, Phone, MessageSquare, Clock } from 'lucide-react'
+import { Mail, Phone, MessageSquare, Clock , MonitorPlay, Send} from 'lucide-react'
 import { useState } from 'react'
 
 export default function ContactUs() {
@@ -29,10 +29,12 @@ export default function ContactUs() {
     },
     {
       icon: <MessageSquare className="w-6 h-6 text-[#0466c8]" />,
-      title: "Live Chat",
+      title: "Live Chat from whatsapp",
       description: "Chat with our support team",
       value: "Start Chat",
-      badge: "Online"
+      badge: "Online",
+      // Add this whatsappLink property
+      whatsappLink: "https://wa.me/233552373603" // Replace with your company WhatsApp number
     },
     {
       icon: <Clock className="w-6 h-6 text-[#0466c8]" />,
@@ -40,7 +42,23 @@ export default function ContactUs() {
       description: "Visit our office",
       value: "Mon-Fri: 8AM - 5PM",
       badge: "GMT"
-    }
+    },
+    {
+      icon: <Send className="w-6 h-6 text-[#0466c8]" />,
+      title: "Live Chat us on telegram",
+      description: "Chat with our support team",
+      value: "Start Chat",
+      badge: "Not available yet!",
+      telegramLink: "https://t.me/YourCompanyUsername" // Replace with your Telegram username
+    },
+    {
+      icon: <MonitorPlay className="w-6 h-6 text-[#0466c8]" />,
+      title: "Watch us on Youtube",
+      description: "check out our available videos",
+      value: "Over 50+ videos available",
+      badge: "online",
+      youtubeLink: "https://www.youtube.com/@cyber1defense3265"
+    },
   ]
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,8 +94,22 @@ export default function ContactUs() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {contactMethods.map((method, index) => (
-            <div key={index} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="flex items-start space-x-4">
+                  <div 
+                  key={index} 
+                  className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => {
+                    if (method.whatsappLink) {
+                      window.open(method.whatsappLink, '_blank');
+                    }
+                    if (method.telegramLink) {
+                      window.open(method.telegramLink, '_blank');
+                    }
+                    if (method.youtubeLink) {
+                      window.open(method.youtubeLink, '_blank');
+                    }
+                  }}
+                >             
+                <div className="flex items-start space-x-4">
                 <div className="p-2 bg-blue-50 rounded-lg">
                   {method.icon}
                 </div>

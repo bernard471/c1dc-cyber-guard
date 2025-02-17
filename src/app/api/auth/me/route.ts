@@ -2,13 +2,28 @@ import { getDataFromToken } from "@/helpers/getdatafromtoken";
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import { User } from "@/models/User";
+import { getToken } from "next-auth/jwt";
 
 export async function GET(request: NextRequest) {
     try {
         await connectDB();
-        const userId = await getDataFromToken(request);
         
-        const user = await User.findById(userId).select("-password");
+        // Check for NextAuth session first
+        const session = await getToken({ 
+            req: request, 
+            secret: process.env.NEXTAUTH_SECRET 
+        });
+
+        let user;
+
+        if (session?.email) {
+            // Handle Google authenticated users
+            user = await User.findOne({ email: session.email }).select("-password");
+        } else {
+            // Handle JWT authenticated users
+            const userId = await getDataFromToken(request);
+            user = await User.findById(userId).select("-password");
+        }
         
         if (!user) {
             return NextResponse.json({ 
@@ -34,4 +49,3 @@ export async function GET(request: NextRequest) {
         }, { status: 401 });
     }
 }
-

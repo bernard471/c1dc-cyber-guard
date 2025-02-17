@@ -12,14 +12,33 @@ import { LocationTracking } from '@/models/LocationTracking';
 import { Sextortion } from '@/models/Sextortion';
 import { ShoppingScam } from '@/models/ShoppingScam';
 import { SocialMediaHack} from '@/models/SocialAccountHack';
-import  EmergencyReport  from '@/models/EmergencyReport'; // Add this import
+import EmergencyReport from '@/models/EmergencyReport';
 import { getDataFromToken } from '@/helpers/getdatafromtoken';
-
+import { getToken } from "next-auth/jwt";
+import mongoose from 'mongoose';
 
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
-    const userId = await getDataFromToken(request);
+    
+    let userId;
+    
+    const session = await getToken({ 
+      req: request, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+
+    if (session?.email) {
+      if (!mongoose.connection.db) {
+        throw new Error('Database connection not established');
+      }
+      const user = await mongoose.connection.db
+        .collection('users')
+        .findOne({ email: session.email });
+      userId = user?._id;
+    } else {
+      userId = await getDataFromToken(request);
+    }
 
     const [
       momoUpdates,
@@ -34,7 +53,7 @@ export async function GET(request: NextRequest) {
       sextortionUpdates,
       shoppingScamUpdates,
       socialAccountUpdates,
-      emergencyUpdates // Add this
+      emergencyUpdates
     ] = await Promise.all([
       MomoFraud.find(
         { userId, statusMessage: { $exists: true, $ne: '' } },
@@ -101,7 +120,6 @@ export async function GET(request: NextRequest) {
         'caseNumber status statusMessage updatedAt'
       ).sort({ updatedAt: -1 })
     ]);
-
     const allUpdates = [
       ...momoUpdates,
       ...whatsappUpdates,
@@ -115,7 +133,7 @@ export async function GET(request: NextRequest) {
       ...sextortionUpdates,
       ...shoppingScamUpdates,
       ...socialAccountUpdates,
-      ...emergencyUpdates // Add this
+      ...emergencyUpdates
     ].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
     return NextResponse.json({ 

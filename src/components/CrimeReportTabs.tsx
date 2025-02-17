@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Clock, MapPin, SendHorizontal } from 'lucide-react';
+import { Clock, SendHorizontal } from 'lucide-react';
 import { ConfirmationPopup } from './ConfirmationPopup';
 import { TrackingDetailsPopup } from './TrackingDetailsPopup';
 
@@ -32,7 +32,7 @@ export const CrimeReportTabs = () => {
     const [isTracking, setIsTracking] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [location, setLocation] = useState<Location | null>(null);
-    const [locationError, setLocationError] = useState('');
+    const [, setLocationError] = useState('');
     const [caseNumber, setCaseNumber] = useState('');
     const [activeTab, setActiveTab] = useState('report');
     const [trackingId, setTrackingId] = useState('');
@@ -44,8 +44,10 @@ export const CrimeReportTabs = () => {
       description: '',
       severity: '',
       files: [] as File[],
-      localAuthorities: false
+      localAuthorities: false,
+      useLocation: 'no' // Add this new field
     });
+    
   const handleSeverityChange = (value: string): void => {
     setFormData(prev => ({
       ...prev,
@@ -61,22 +63,26 @@ export const CrimeReportTabs = () => {
   };
 
    // Get user's location
-    useEffect(() => {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
-            });
-          },
-          (error) => {
-            setLocationError('Unable to get your location. Please enter it manually.');
-            console.error(error);
-          }
-        );
-      }
-    }, []);
+   const getLocation = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+        },
+        (error: GeolocationPositionError) => {
+          const errorMessage = error.code === 1 
+            ? 'Location permission denied'
+            : 'Unable to get your location. Please try again.';
+          setLocationError(errorMessage);
+        }
+      );
+    }
+  };
+  
+  
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         const { name, value }: FormField = e.target;
@@ -96,11 +102,11 @@ export const CrimeReportTabs = () => {
       };
 
       const handleEmergencySubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-          e.preventDefault();
-          setIsSubmitting(true);
-          
-          const newCaseNumber = generateCaseNumber();
-          setCaseNumber(newCaseNumber);
+        e.preventDefault();
+        setIsSubmitting(true);
+        
+        const newCaseNumber = generateCaseNumber();
+        setCaseNumber(newCaseNumber);
         
           try {
             // Process files before sending
@@ -116,21 +122,25 @@ export const CrimeReportTabs = () => {
               })
             );
       
+
+            const reportData = {
+              caseNumber: newCaseNumber,
+              name: formData.name,
+              contact: formData.contact,
+              severity: formData.severity,
+              description: formData.description,
+              files: processedFiles,
+              // Only include location if user consented
+              ...(formData.useLocation === 'yes' && location && { location })
+            };
+        
             const response = await fetch('/api/crime-reports', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  caseNumber: newCaseNumber,
-                  name: formData.name,
-                  contact: formData.contact,
-                  severity: formData.severity,
-                  description: formData.description,
-                  location: location,
-                  files: processedFiles
-                }),
-              });
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(reportData),
+            });
               
         
             if (!response.ok) {
@@ -145,7 +155,8 @@ export const CrimeReportTabs = () => {
               description: '',
               severity: '',
               files: [],
-              localAuthorities: false
+              localAuthorities: false,
+              useLocation: 'no' // Add this new field
             });
           } catch (error) {
             console.error('Error submitting emergency report:', error);
@@ -274,14 +285,47 @@ export const CrimeReportTabs = () => {
             </Select>
 
 
-          <div className="flex items-center gap-2 text-sm text-green-600">
-            <MapPin className="h-4 w-4" />
-            {location ? (
-                    <span>Location detected</span>
-                  ) : (
-                    <span>{locationError || 'Detecting location...'}</span>
-                  )}
-          </div>
+            <div className="flex flex-col space-y-2">
+  <label className="text-gray-300">Include Your Location?</label>
+  <div className="flex space-x-4">
+    <label className="flex items-center space-x-2">
+      <input
+        type="radio"
+        name="useLocation"
+        value="yes"
+        checked={formData.useLocation === 'yes'}
+        onChange={(e) => {
+          setFormData(prev => ({
+            ...prev,
+            useLocation: e.target.value
+          }));
+          if (e.target.value === 'yes') {
+            getLocation();
+          } else {
+            setLocation(null);
+          }
+        }}
+        className="text-blue-600"
+      />
+      <span className="text-gray-300">Yes</span>
+    </label>
+    <label className="flex items-center space-x-2">
+      <input
+        type="radio"
+        name="useLocation"
+        value="no"
+        checked={formData.useLocation === 'no'}
+        onChange={(e) => setFormData(prev => ({
+          ...prev,
+          useLocation: e.target.value
+        }))}
+        className="text-blue-600"
+      />
+      <span className="text-gray-300">No</span>
+    </label>
+  </div>
+</div>
+
 
           <Textarea
             placeholder="Describe the emergency situation..."

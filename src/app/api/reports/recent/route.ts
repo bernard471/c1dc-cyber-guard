@@ -2,21 +2,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import mongoose from 'mongoose';
 import { getDataFromToken } from '@/helpers/getdatafromtoken';
+import { getToken } from "next-auth/jwt";
 
 export async function GET(request: NextRequest) {
   try {
-    // Log the incoming request
- 
+    await connectDB();
     
-    const userId = getDataFromToken(request);
+    let userId;
+    
+    // Check for NextAuth session first
+    const session = await getToken({ 
+      req: request, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+
+    if (session?.email) {
+      if (!mongoose.connection.db) {
+        throw new Error('Database connection not established');
+      }
+      const user = await mongoose.connection.db
+        .collection('users')
+        .findOne({ email: session.email });
+      userId = user?._id;
+    } else {
+      userId = getDataFromToken(request);
+    }
 
     const userObjectId = new mongoose.Types.ObjectId(userId);
-
-
-
-    // Log MongoDB connection attempt
-
-    await connectDB();
 
     
     const reportCollections = [

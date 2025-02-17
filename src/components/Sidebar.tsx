@@ -15,6 +15,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useSession, signOut } from "next-auth/react";
+
 
 
 const navigationItems = [
@@ -56,6 +58,8 @@ const navigationItems = [
 const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const { data: session } = useSession();
+
 
 
   const initialOpenDropdowns = navigationItems
@@ -146,31 +150,39 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab:
       </div>
     ) : (
       <Link href={item.path}>
-        <button
-          onClick={async () => {
-            setActiveTab(item.id);
-            setIsMobileMenuOpen(false);
-            
-            // Add logout logic for home button
-            if (item.id === 'home') {
-              try {
+      <button
+        onClick={async () => {
+          setActiveTab(item.id);
+          setIsMobileMenuOpen(false);
+          
+          if (item.id === 'home') {
+            try {
+              if (session) {
+                // For Google-authenticated users
+                await signOut({ 
+                  redirect: true,
+                  callbackUrl: '/' 
+                });
+              } else {
+                // For credential-authenticated users
                 await fetch('/api/auth/logout', {
-                  method: 'POST',  // Changed from 'GET' to 'POST'
+                  method: 'POST',
                 });
                 router.push('/');
-              } catch (error) {
-                console.error('Logout failed:', error);
               }
+            } catch (error) {
+              console.error('Logout failed:', error);
             }
-          }}
-          className={`w-full flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${
-            activeTab === item.id ? 'bg-gray-100 text-gray-900' : ''
-          }`}
-        >
-          {item.icon}
-          <span className="ml-3">{item.name}</span>
-        </button>
-      </Link>
+          }
+        }}
+        className={`w-full flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${
+          activeTab === item.id ? 'bg-gray-100 text-gray-900' : ''
+        }`}
+      >
+        {item.icon}
+        <span className="ml-3">{item.name}</span>
+      </button>
+    </Link>
     )}
   </div>
 ))}

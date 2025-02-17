@@ -3,18 +3,31 @@
 import { Bell, UserCircle, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+
 
 const DashboardHeader = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [userData, setUserData] = useState<{ name?: string; email?: string } | null>(null);
   const router = useRouter();
+  const { data: session } = useSession();
+
 
   useEffect(() => {
     const fetchUserData = async () => {
+      // If user is authenticated with Google, use session data
+      if (session?.user) {
+        setUserData({
+          name: session.user.name || '',
+          email: session.user.email || ''
+        });
+        return;
+      }
+
+      // Otherwise fetch from /api/auth/me endpoint
       try {
         const response = await fetch('/api/auth/me');
         const data = await response.json();
-        console.log('User data response:', data); // Track API response
         
         if (data.data) {
           setUserData(data.data);
@@ -25,26 +38,29 @@ const DashboardHeader = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, [session]);
 
   const handleLogout = async () => {
-    try {
+    if (session) {
+      await signOut({ redirect: true, callbackUrl: '/auth/login' });
+    } else {
+      try {
         const response = await fetch('/api/auth/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
 
         const data = await response.json();
-
         if (data.success) {
-            router.push('/auth/login');
+          router.push('/auth/login');
         }
-    } catch (error) {
+      } catch (error) {
         console.error('Logout failed:', error);
+      }
     }
-};
+  };
 
   return (
     <header className="bg-white shadow-sm relative">

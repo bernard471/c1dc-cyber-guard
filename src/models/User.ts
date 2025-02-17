@@ -3,9 +3,14 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema({
   name: { type: String },
   email: { type: String, unique: true, sparse: true },
-  password: { 
+  password: {
     type: String,
-    required: true
+    required: function(this: { isGoogleUser: boolean }) {
+      return !this.isGoogleUser; // Password only required for non-Google users
+    }  },
+  isGoogleUser: {
+    type: Boolean,
+    default: false
   },
   reports: [{ 
     type: mongoose.Schema.Types.ObjectId, 

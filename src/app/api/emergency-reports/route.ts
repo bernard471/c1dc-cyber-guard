@@ -2,15 +2,33 @@ import { NextResponse, NextRequest } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import EmergencyReport from '@/models/EmergencyReport';
 import { getDataFromToken } from '@/helpers/getdatafromtoken';
+import { getToken } from "next-auth/jwt";
+import mongoose from 'mongoose';
 
 export async function POST(req: NextRequest) {
   try {
     await connectDB;
-    
     const body = await req.json();
-    const userId = await getDataFromToken(req);
+    
+    let userId;
+    
+    const session = await getToken({ 
+      req: req, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
 
-    // Create the final report data structure
+    if (session?.email) {
+      if (!mongoose.connection.db) {
+        throw new Error('Database connection not established');
+      }
+      const user = await mongoose.connection.db
+        .collection('users')
+        .findOne({ email: session.email });
+      userId = user?._id;
+    } else {
+      userId = await getDataFromToken(req);
+    }
+
     const finalReportData = {
       userId: userId,
       caseNumber: body.caseNumber,
@@ -47,8 +65,26 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    await connectDB;
-    const userId = await getDataFromToken(req);
+    await connectDB();
+    
+    let userId;
+    
+    const session = await getToken({ 
+      req: req, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+
+    if (session?.email) {
+      if (!mongoose.connection.db) {
+        throw new Error('Database connection not established');
+      }
+      const user = await mongoose.connection.db
+        .collection('users')
+        .findOne({ email: session.email });
+      userId = user?._id;
+    } else {
+      userId = await getDataFromToken(req);
+    }
 
     const reports = await EmergencyReport.find({ userId })
       .sort({ createdAt: -1 })

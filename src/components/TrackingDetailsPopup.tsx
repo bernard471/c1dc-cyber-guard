@@ -182,8 +182,14 @@ export const TrackingDetailsPopup = ({ isOpen, onClose, caseDetails }: TrackingD
                 Location
               </p>
               <div className="text-white text-sm">
-                <p>Latitude: {caseDetails.location.latitude.toFixed(6)}</p>
-                <p>Longitude: {caseDetails.location.longitude.toFixed(6)}</p>
+                {caseDetails.location ? (
+                  <>
+                    <p>Latitude: {caseDetails.location.latitude.toFixed(6)}</p>
+                    <p>Longitude: {caseDetails.location.longitude.toFixed(6)}</p>
+                  </>
+                ) : (
+                  <p>Location not provided</p>
+                )}
               </div>
             </div>
 

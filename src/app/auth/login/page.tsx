@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield } from 'lucide-react';
+import { signIn } from "next-auth/react"
+import { FcGoogle } from 'react-icons/fc';
+
 
 export default function Login() {
   const router = useRouter();
@@ -36,6 +39,7 @@ export default function Login() {
       console.error(error);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -138,6 +142,14 @@ export default function Login() {
             >
               Sign in to your account
             </button>
+            <button
+            type="button"
+            onClick={() => signIn('google')}
+            className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150"
+          >
+              <FcGoogle className="w-5 h-5" />
+              Continue with Google
+          </button>
           </form>
 
           <div className="text-center">

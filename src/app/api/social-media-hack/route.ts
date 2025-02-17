@@ -2,14 +2,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { SocialMediaHack } from '@/models/SocialAccountHack';
 import { getDataFromToken } from "@/helpers/getdatafromtoken";
+import { getToken } from "next-auth/jwt";
+import mongoose from 'mongoose';
 
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const data = await req.json();
-    const userId = await getDataFromToken(req);
     
-    // Generate unique report ID
+    let userId;
+    
+    const session = await getToken({ 
+      req: req, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+
+    if (session?.email) {
+      if (!mongoose.connection.db) {
+        throw new Error('Database connection not established');
+      }
+      const user = await mongoose.connection.db
+        .collection('users')
+        .findOne({ email: session.email });
+      userId = user?._id;
+    } else {
+      userId = await getDataFromToken(req);
+    }
+    
     const reportId = `SMH-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
 
     const socialMediaHack = await SocialMediaHack.create({
@@ -48,7 +67,25 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const userId = await getDataFromToken(req);
+    
+    let userId;
+    
+    const session = await getToken({ 
+      req: req, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+
+    if (session?.email) {
+      if (!mongoose.connection.db) {
+        throw new Error('Database connection not established');
+      }
+      const user = await mongoose.connection.db
+        .collection('users')
+        .findOne({ email: session.email });
+      userId = user?._id;
+    } else {
+      userId = await getDataFromToken(req);
+    }
 
     const reports = await SocialMediaHack.find({ userId })
       .sort({ createdAt: -1 })

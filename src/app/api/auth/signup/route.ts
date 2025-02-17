@@ -3,6 +3,8 @@ import connectDB from '@/lib/mongodb';
 import { User } from '@/models/User';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
+
 
 export async function POST(request: NextRequest) {
     try {
@@ -36,6 +38,13 @@ export async function POST(request: NextRequest) {
             createdAt: new Date(),
             lastActive: new Date()
         });
+
+        // Add after user creation
+        const token = jwt.sign(
+          { userId: newUser._id },
+          process.env.JWT_SECRET || 'fallback-secret-key',
+          { expiresIn: '24h' }
+        );
 
         // You can add email verification here if needed
         // await sendEmail({email, emailType: "VERIFY", userId: newUser._id})
@@ -79,16 +88,26 @@ if (newUser) {
   }
   
 
-        return NextResponse.json({
-            success: true,
-            message: 'User created successfully',
-            user: {
-                id: newUser._id,
-                username: newUser.name,
-                email: newUser.email,
-                createdAt: newUser.createdAt
-            }
+        // Modify the response to include cookie
+        const response = NextResponse.json({
+          success: true,
+          message: 'User created successfully',
+          user: {
+              id: newUser._id,
+              username: newUser.name,
+              email: newUser.email,
+              createdAt: newUser.createdAt
+          }
         }, { status: 201 });
+
+        response.cookies.set('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 60 * 60 * 24 // 24 hours
+        });
+
+        return response;
 
     } catch (error) {
         if (error instanceof Error) {
