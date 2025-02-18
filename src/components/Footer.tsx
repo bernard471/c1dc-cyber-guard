@@ -1,4 +1,5 @@
-import { Shield } from 'lucide-react';
+import LogoImage from '@/images/Logoimage.png';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const Footer = () => {
@@ -32,19 +33,31 @@ export const Footer = () => {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold mb-4">Connect</h3>
+                  <h3 className="text-white font-semibold mb-4">Created By C1DC</h3>
                   <div className="flex items-center">
+                    <ul className="space-y-2">
+
+                <li> 
+                  <Link href="https://cyber1defense.com/" className="flex items-center">
+                  <span className="ml-2  text-white/70 hover:text-[#979dac] transition-colors">
+                  Cyber<span className="text-orange-500">1</span>Defense Communication
+                  </span>
+                </Link>
+                </li>
+                <li> 
                   <Link href="/" className="flex items-center">
-                    <Shield className="w-8 h-8 text-[#0466c8]" />
-                    <span className="ml-2 text-xl font-bold text-[#979dac] hover:text-white transition-colors">
-                      CyberGuard
-                    </span>
-                  </Link>
+                  <Image  src={LogoImage} alt="Logo" width={32} height={32} />
+                  <span className="ml-2 text-xl font-bold text-white/70 hover:text-[#979dac] transition-colors">
+                  Cyber<span className="text-orange-500">1</span>Guard
+                  </span>
+                </Link>
+                </li>
+                </ul>
                 </div>
                 </div>
               </div>
               <div className="mt-8 pt-8 border-t border-gray-800 text-center">
-                <p>© {currentYear} CyberGuard. All rights reserved.</p>
+                <p>© {currentYear} Cyber<span className="text-orange-500">1</span>Guard. All rights reserved.</p>
               </div>
             </div>
           </footer>

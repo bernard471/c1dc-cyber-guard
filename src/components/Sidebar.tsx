@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from "next-auth/react";
+import LogoImage from '@/images/Logoimage.png';
+import Image from 'next/image';
 
 
 
@@ -94,8 +96,9 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab:
         flex flex-col h-screen
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
-        <div className="p-5 border-b">
-          <h1 className="text-xl font-bold text-gray-800 pl-11">Cybercrime Report</h1>
+        <div className="p-5 border-b flex items-center">
+          <Image  src={LogoImage} alt="Logo" width={32} height={32} />
+          <h1 className="text-xl font-bold text-gray-800 pl-2">Cyber<span className="text-orange-600">1</span>Guard</h1>
         </div>
         
         <nav className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">

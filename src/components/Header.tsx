@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Shield, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react';
+import LogoImage from '@/images/Logoimage.png';
+import Image from 'next/image';
 
 interface NavigationProps {
   isScrolled: boolean;
@@ -26,9 +28,9 @@ export const Navigation = ({ isScrolled }: NavigationProps) => {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <Shield className="w-8 h-8 text-[#0466c8]" />
-              <span className="ml-2 text-xl font-bold text-[#979dac] hover:text-white transition-colors">
-                CyberGuard
+              <Image  src={LogoImage} alt="Logo" width={32} height={32} />
+              <span className="ml-2 text-xl font-bold text-white/70 hover:text-[#979dac] transition-colors">
+              Cyber<span className="text-orange-500">1</span>Guard
               </span>
             </Link>
           </div>

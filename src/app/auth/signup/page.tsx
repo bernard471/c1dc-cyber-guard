@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Shield } from 'lucide-react';
 import { FcGoogle } from "react-icons/fc"
 import { signIn } from 'next-auth/react';
-
+import LogoImage from '@/images/Logoimage.png';
+import Image from 'next/image';
 
 export default function SignUp() {
   const router = useRouter();
@@ -57,7 +57,7 @@ const handleGoogleSignIn = async () => {
       {/* Left side - Decorative */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 justify-center items-center p-12">
         <div className="max-w-md text-white">
-          <h1 className="text-4xl font-bold mb-6">Join CyberGuard Today</h1>
+          <h1 className="text-4xl font-bold mb-6">Join Cyber<span className="text-orange-500">1</span>Guard Today</h1>
           <p className="text-xl">Start protecting your digital assets with enterprise-grade security solutions</p>
         </div>
       </div>
@@ -68,9 +68,9 @@ const handleGoogleSignIn = async () => {
           <div className="text-center">
           <div className="flex items-center justify-center mb-4">
             <Link href="/" className="flex items-center">
-              <Shield className="w-8 h-8 text-[#0466c8]" />
-              <span className="ml-2 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
-                CyberGuard
+            <Image  src={LogoImage} alt="Logo" width={32} height={32} />
+            <span className="ml-2 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
+              Cyber<span className="text-orange-500">1</span>Guard
               </span>
             </Link>
           </div>

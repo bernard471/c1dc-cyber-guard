@@ -76,26 +76,71 @@ const NetworkLines = () => {
 };
 
   
-  // Live Security Feed
+const WelcomeModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="bg-gradient-to-br from-[#002255] to-[#001233] p-10 rounded-2xl max-w-3xl mx-4 relative border border-blue-400/40 shadow-xl shadow-blue-500/30 backdrop-blur-sm transform transition-all duration-300 scale-100 hover:scale-[1.02]">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-200 mb-6">
+            Welcome to Cyber1Defense Communication&apos;s Cyber Crime Reporting Platform!
+          </h2>
+          <div className="space-y-6 text-blue-100">
+            <p className="leading-relaxed">
+              Hey there! 👋 You&apos;ve just entered the #1 <span className="font-bold">Cyber<span className="text-orange-500">1</span>Guard</span>
+              , where online threats get neutralized, and justice is delivered. I&apos;m DK Cyber 🦸‍♂️, your trusted cyber crime fighter, and I want you to know—you&apos;re not alone in this.
+            </p>
+            <p className="leading-relaxed">
+              No matter the cyber issue, we&apos;ve got your back. Just report it, sit back, sip on your coffee ☕, and let us handle the heavy lifting. Your safety is our priority! 🔒
+            </p>
+            <p className="text-lg font-semibold text-cyan-300 mt-4">
+              Stay secure, stay confident. ✨
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="mt-8 px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 font-semibold shadow-lg shadow-blue-500/30"
+          >
+            Let&apos;s Begin 🚀
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+
 
 
 
 const LandingPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
+    // Check if it's the first visit
+    const hasVisited = localStorage.getItem('hasVisited');
+    if (!hasVisited) {
+      setShowWelcome(true);
+      localStorage.setItem('hasVisited', 'true');
+    }
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-
   return (
     <div className="min-h-screen bg-[#001233] relative">
+      <WelcomeModal 
+        isOpen={showWelcome} 
+        onClose={() => setShowWelcome(false)} 
+      />
       <CyberGrid />
       <FloatingParticles />
       <NetworkLines />

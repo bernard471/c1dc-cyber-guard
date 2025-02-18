@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Shield } from 'lucide-react';
 import { signIn } from "next-auth/react"
 import { FcGoogle } from 'react-icons/fc';
-
+import LogoImage from '@/images/Logoimage.png';
+import Image from 'next/image';
 
 export default function Login() {
   const router = useRouter();
@@ -46,7 +46,7 @@ export default function Login() {
       {/* Left side - Decorative */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 justify-center items-center p-12">
         <div className="max-w-md text-white">
-          <h1 className="text-4xl font-bold mb-6">Welcome to CyberGuard</h1>
+          <h1 className="text-4xl font-bold mb-6">Welcome to Cyber<span className="text-orange-500">1</span>Guard</h1>
           <p className="text-xl">Secure your digital assets with enterprise-grade protection</p>
         </div>
       </div>
@@ -57,13 +57,13 @@ export default function Login() {
           <div className="text-center">
           <div className="flex items-center justify-center mb-4">
             <Link href="/" className="flex items-center">
-              <Shield className="w-8 h-8 text-[#0466c8]" />
-              <span className="ml-2 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
-                CyberGuard
+            <Image  src={LogoImage} alt="Logo" width={32} height={32} />
+            <span className="ml-2 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
+              Cyber<span className="text-orange-500">1</span>Guard
               </span>
             </Link>
           </div>
-            <h2 className="text-3xl font-bold text-gray-900">Sign in to CyberGuard</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Sign in to Cyber<span className="text-orange-500">1</span>Guard</h2>
             <p className="mt-2 text-sm text-gray-600">
               Protect your business with advanced security
             </p>

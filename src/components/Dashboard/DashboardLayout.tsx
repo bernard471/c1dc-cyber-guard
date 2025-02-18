@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from 'react'
-import { Shield, Home, HelpCircle, FileText, X, Menu, ChevronDown, ChevronRight } from 'lucide-react'
+import { Home, HelpCircle, FileText, X, Menu, ChevronDown, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode } from 'react'
+import LogoImage from '@/images/Logoimage.png';
+import Image from 'next/image';
 
 const navigationItems = [
   { icon: <Home className="w-5 h-5" />, name: 'Back to Home', id: 'home', path: '/' },
@@ -55,11 +57,11 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
           </button>
           <div>
           <Link href="/" className="flex items-center">
-            <Shield className="w-8 h-8 text-[#0466c8]" />
-            <span className="ml-2 text-xl font-bold text-gray-800">Support & Legal</span>
+          <Image  src={LogoImage} alt="Logo" width={32} height={32} />
+          <span className="ml-2 text-xl font-bold text-blue-800">Support <span className='text-orange-500'>&&</span> Legal</span>
           </Link>
         </div>
-        </div>
+      </div>
       </div>
     </header>
       <button 
@@ -77,8 +79,8 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
       `}>
         <div className="p-4 border-b">
           <Link href="/" className="flex items-center">
-            <Shield className="w-8 h-8 text-[#0466c8]" />
-            <span className="ml-2 text-xl font-bold text-gray-800">CyberGuard</span>
+          <Image  src={LogoImage} alt="Logo" width={32} height={32} />
+            <span className="ml-2 text-xl font-bold text-blue-800">Cyber<span className="text-orange-500">1</span>Guard</span>
           </Link>
         </div>
 
