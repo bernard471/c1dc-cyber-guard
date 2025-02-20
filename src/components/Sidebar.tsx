@@ -61,6 +61,8 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab:
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+
 
 
 
@@ -97,9 +99,12 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab:
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-5 border-b flex items-center">
-          <Image  src={LogoImage} alt="Logo" width={32} height={32} />
-          <h1 className="text-xl font-bold text-gray-800 pl-2">Cyber<span className="text-orange-600">1</span>Guard</h1>
+          <Link href="/" className="flex items-center">
+            <Image src={LogoImage} alt="Logo" width={32} height={32} />
+            <h1 className="text-xl font-bold text-gray-800 pl-2">Cyber<span className="text-orange-600">1</span>Guard</h1>
+          </Link>
         </div>
+
         
         <nav className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
         {navigationItems.map((item) => (
@@ -154,30 +159,31 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab:
     ) : (
       <Link href={item.path}>
       <button
-        onClick={async () => {
-          setActiveTab(item.id);
-          setIsMobileMenuOpen(false);
-          
-          if (item.id === 'home') {
-            try {
-              if (session) {
-                // For Google-authenticated users
-                await signOut({ 
-                  redirect: true,
-                  callbackUrl: '/' 
-                });
-              } else {
-                // For credential-authenticated users
-                await fetch('/api/auth/logout', {
-                  method: 'POST',
-                });
-                router.push('/');
-              }
-            } catch (error) {
-              console.error('Logout failed:', error);
-            }
-          }
-        }}
+onClick={async () => {
+  setActiveTab(item.id);
+  setIsMobileMenuOpen(false);
+  
+  if (item.id === 'home') {
+    setIsLoading(true);
+    try {
+      if (session) {
+        await signOut({ 
+          redirect: true,
+          callbackUrl: '/' 
+        });
+      } else {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+        });
+        router.push('/');
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+}}
         className={`w-full flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${
           activeTab === item.id ? 'bg-gray-100 text-gray-900' : ''
         }`}
@@ -193,12 +199,22 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string; setActiveTab:
         </nav>
       </div>
 
+{isLoading && (
+  <div className="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center">
+    <div className="flex flex-col items-center">
+      <div className="w-16 h-16 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
+      <p className="mt-4 text-xl font-semibold text-gray-800">Logging out...</p>
+    </div>
+  </div>
+)}
+
       {isMobileMenuOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
+      
     </>
   );
 };
