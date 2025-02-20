@@ -43,13 +43,19 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left side - Decorative */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 justify-center items-center p-12">
-        <div className="max-w-md text-white">
-          <h1 className="text-4xl font-bold mb-6">Welcome to Cyber<span className="text-orange-500">1</span>Guard</h1>
-          <p className="text-xl">Secure your digital assets with enterprise-grade protection</p>
-        </div>
-      </div>
+{/* Left side - Decorative */}
+<div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 justify-center items-center p-12 relative">
+  {/* Background Logo */}
+  <div className="absolute inset-0 flex items-center justify-center opacity-10">
+    <Image src={LogoImage} alt="Background Logo" width={400} height={400} className="object-contain" />
+  </div>
+  {/* Content with overlay */}
+  <div className="max-w-md text-white relative z-10">
+    <h1 className="text-4xl font-bold mb-6">Welcome to Cyber<span className="text-orange-500">1</span>Guard</h1>
+    <p className="text-xl">Secure your digital assets with enterprise-grade protection</p>
+  </div>
+</div>
+
 
       {/* Right side - Login Form */}
       <div className="flex-1 flex items-center justify-center p-8">
